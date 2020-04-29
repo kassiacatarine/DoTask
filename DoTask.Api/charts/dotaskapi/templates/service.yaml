@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dotaskapi.fullname" . }}
+  labels:
+    app: {{ template "dotaskapi.name" . }}
+    chart: {{ template "dotaskapi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "dotaskapi.name" . }}
+    release: {{ .Release.Name }}
