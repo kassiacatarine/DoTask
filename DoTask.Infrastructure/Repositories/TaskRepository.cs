@@ -11,10 +11,10 @@ namespace DoTask.Infrastructure.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private readonly DoTaskCommandsDbContext _context;
+        private readonly CommandsDbContext _context;
         public IUnitOfWork UnitOfWork => _context;
 
-        public TaskRepository(DoTaskCommandsDbContext context)
+        public TaskRepository(CommandsDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using DoTask.Api.v1.Application.Commands.Users.CreateUserCommand;
+using DoTask.Api.v1.Application.Queries.Users.ListUserSummaryQuery;
 using DoTask.Api.v1.Application.Queries.Users.UserSummaryQuery.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,22 +14,17 @@ namespace DoTask.Api.v1.Controllers
 {
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class UsersController : Controller
+    public class UsersController : ApiControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public UsersController(
-            IMediator mediator
-        )
+        public UsersController(IMediator mediator) : base(mediator)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        [HttpGet]
+        public async Task<ActionResult<IList<UserSummary>>> GetUsersAsync()
+        {
+            return Single(await QueryAsync(new ListUserSummaryQuery()));
+        }
 
         //[HttpGet]
         //[ProducesResponseType(typeof(IEnumerable<UserSummary>), (int)HttpStatusCode.OK)]
@@ -42,14 +38,17 @@ namespace DoTask.Api.v1.Controllers
         //}
 
         /// <summary>
-        /// Handle postback from username/password login
+        /// Create new user
         /// </summary>
+        /// <param name="command">Info of user</param>
+        /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserCommand command)
         {
-            var response = await _mediator.Send(command);
+
+            var response = await CommandAsync(command);
 
             if (response.Errors.Any())
             {

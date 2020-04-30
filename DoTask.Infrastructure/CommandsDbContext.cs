@@ -1,5 +1,4 @@
-﻿using DoTask.Domain.AggregatesModel.Tasks;
-using DoTask.Domain.AggregatesModel.Users;
+﻿using DoTask.Domain.AggregatesModel.Users;
 using DoTask.Domain.SeedWork;
 using DoTask.Infrastructure.Mappings;
 using MediatR;
@@ -12,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace DoTask.Infrastructure
 {
-    public class DoTaskCommandsDbContext : DbContext, IUnitOfWork
+    public class CommandsDbContext : DbContext, IUnitOfWork
     {
         public DbSet<Domain.AggregatesModel.Tasks.Task> Tasks { get; set; }
         public DbSet<User> Users { get; set; }
 
         private readonly IMediator _mediator;
         private IDbContextTransaction _currentTransaction;
-        public DoTaskCommandsDbContext(DbContextOptions<DoTaskCommandsDbContext> options, IMediator mediator) : base(options)
+        public CommandsDbContext(DbContextOptions<CommandsDbContext> options, IMediator mediator) : base(options)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }

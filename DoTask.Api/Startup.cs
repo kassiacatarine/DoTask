@@ -72,7 +72,9 @@ namespace DoTask.Api
 
         public static IServiceCollection AddCustomDbContext(this IServiceCollection services)
         {
-            services.AddDbContext<DoTaskCommandsDbContext>(opt =>
+            services.AddDbContext<CommandsDbContext>(opt =>
+               opt.UseInMemoryDatabase("DoTask"));
+            services.AddDbContext<QueriesDbContext>(opt =>
                opt.UseInMemoryDatabase("DoTask"));
             return services;
         }

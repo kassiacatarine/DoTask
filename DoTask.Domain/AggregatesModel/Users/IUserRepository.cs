@@ -10,7 +10,7 @@ namespace DoTask.Domain.AggregatesModel.Users
     {
         User Add(User user);
         void Update(User user);
-
         Task<User> FindByEmailAsync(string email);
+        Task<IEnumerable<T>> ListUserSummaryAsync<T>();
     }
 }

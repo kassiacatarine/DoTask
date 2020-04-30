@@ -1,6 +1,7 @@
 ﻿using DoTask.Domain.AggregatesModel.Users;
 using DoTask.Domain.SeedWork;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,11 +18,15 @@ namespace DoTask.Api.v1.Application.Commands.Users.CreateUserCommand
 
         public async Task<Response> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
+            if (await _userRepository.FindByEmailAsync(request.Email) != null)
+            {
+                throw new ArgumentException($"This email {request.Email} is already existed!", nameof(request.Email));
+            }
             var user = new User(
-                name: request.Name,
-                email: request.Email,
-                password: request.Password
-            );
+                    name: request.Name,
+                    email: request.Email,
+                    password: request.Password
+                );
 
             _userRepository.Add(user);
 
