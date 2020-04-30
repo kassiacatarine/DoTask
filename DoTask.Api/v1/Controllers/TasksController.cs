@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoTask.Api.v1.Controllers
@@ -7,36 +8,45 @@ namespace DoTask.Api.v1.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class TasksController : Controller
     {
-        // GET: api/<controller>
+        private readonly IMediator _mediator;
+        public TasksController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<controller>/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+        //[HttpPost]
+        //public Task<IActionResult> CreateTaskAsync([FromBody] CreateTaskCommand createTaskCommand)
+        //{
+        //    var response = await _mediator.Send(command).ConfigureAwait(false);
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //    if (response.Errors.Any())
+        //    {
+        //        return BadRequest(response.Errors);
+        //    }
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //    return Ok(response.Result);
+        //}
+
+        //[HttpPut("{id}")]
+        //public void UpdateTaskAsync(int id, [FromBody] UpdateTaskCommand updateTaskCommand)
+        //{
+        //}
+
+        //[HttpDelete("{id}")]
+        //public void DeleteTaskAsync(int id, [FromBody] DeleteTaskCommand deleteTaskCommand)
+        //{
+        //}
     }
 }
