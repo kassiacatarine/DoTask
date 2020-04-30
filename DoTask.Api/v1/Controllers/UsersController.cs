@@ -1,7 +1,9 @@
 ﻿using DoTask.Api.v1.Application.Commands.Users.CreateUserCommand;
+using DoTask.Api.v1.Application.Commands.Users.LoginCommand;
 using DoTask.Api.v1.Application.Queries.Users.ListUserSummaryQuery;
 using DoTask.Api.v1.Application.Queries.Users.UserSummaryQuery.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -24,23 +26,13 @@ namespace DoTask.Api.v1.Controllers
             return Ok(await QueryAsync(new ListUserSummaryQuery()));
         }
 
-        //[HttpGet]
-        //[ProducesResponseType(typeof(IEnumerable<UserSummary>), (int)HttpStatusCode.OK)]
-        ////public async Task<ActionResult<IEnumerable<UserSummary>>> GetUsersAsync()
-        //public string Get(int id)
-        //{
-        //    //var orders = await _userQueries.GetUsersAsync();
-
-        //    //return Ok(users);
-        //    return "";
-        //}
-
         /// <summary>
         /// Create new user
         /// </summary>
         /// <param name="command">Info of user</param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserCommand command)
@@ -56,14 +48,19 @@ namespace DoTask.Api.v1.Controllers
             return Ok(response.Result);
         }
 
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] LoginCommand command)
+        {
+            var response = await CommandAsync(command);
 
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+            if (response.Errors.Any())
+            {
+                return BadRequest(response.Errors);
+            }
+
+            return Ok(response.Result);
+        }
     }
 }

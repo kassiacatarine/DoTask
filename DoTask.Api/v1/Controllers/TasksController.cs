@@ -7,6 +7,7 @@ using DoTask.Api.v1.Application.Queries.Tasks.GetTaskDetailsQuery.ViewModels;
 using DoTask.Api.v1.Application.Queries.Tasks.ListTaskSummaryQuery;
 using DoTask.Api.v1.Application.Queries.Tasks.ListTaskSummaryQuery.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace DoTask.Api.v1.Controllers
 {
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
+    [Authorize]
     public class TasksController : ApiControllerBase
     {
         public TasksController(IMediator mediator) : base(mediator)
