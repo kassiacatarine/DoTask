@@ -9,5 +9,7 @@ namespace DoTask.Domain.AggregatesModel.Tasks
         void Update(Task task);
 
         System.Threading.Tasks.Task<Task> FindByIdAsync(int id);
+        System.Threading.Tasks.Task<TViewModel[]> ListTaskSummaryAsync<TViewModel>();
+        System.Threading.Tasks.Task<TViewModel> GetTaskDetailsAsync<TViewModel>(int id);
     }
 }

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using DoTask.Api.v1.Application.Commands.Users.CreateUserCommand;
+﻿using DoTask.Api.v1.Application.Commands.Users.CreateUserCommand;
 using DoTask.Api.v1.Application.Queries.Users.ListUserSummaryQuery;
 using DoTask.Api.v1.Application.Queries.Users.UserSummaryQuery.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DoTask.Api.v1.Controllers
 {
@@ -23,7 +21,7 @@ namespace DoTask.Api.v1.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<UserSummary>>> GetUsersAsync()
         {
-            return Single(await QueryAsync(new ListUserSummaryQuery()));
+            return Ok(await QueryAsync(new ListUserSummaryQuery()));
         }
 
         //[HttpGet]

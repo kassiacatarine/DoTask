@@ -21,5 +21,15 @@ namespace DoTask.Domain.AggregatesModel.Tasks
             Concluded = false;
             UserId = userId;
         }
+
+        public void Update(string description)
+        {
+            Description = description;
+        }
+
+        public void SetConcluded()
+        {
+            Concluded = true;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DoTask.Domain.AggregatesModel.Tasks;
+﻿using Dapper;
+using DoTask.Domain.AggregatesModel.Tasks;
 using DoTask.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,30 +12,59 @@ namespace DoTask.Infrastructure.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private readonly CommandsDbContext _context;
-        public IUnitOfWork UnitOfWork => _context;
+        private readonly CommandsDbContext _commandsContext;
+        private readonly QueriesDbContext _queriesContext;
+        public IUnitOfWork UnitOfWork => _commandsContext;
 
-        public TaskRepository(CommandsDbContext context)
+        public TaskRepository(CommandsDbContext commandsContext, QueriesDbContext queriesContext)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _commandsContext = commandsContext ?? throw new ArgumentNullException(nameof(commandsContext));
+            _queriesContext = queriesContext ?? throw new ArgumentNullException(nameof(queriesContext));
         }
 
 
         public Domain.AggregatesModel.Tasks.Task Add(Domain.AggregatesModel.Tasks.Task task)
         {
-            return _context.Tasks.Add(task).Entity;
+            return _commandsContext.Tasks.Add(task).Entity;
         }
 
         public async Task<Domain.AggregatesModel.Tasks.Task> FindByIdAsync(int id)
         {
-            return await _context.Tasks
+            return await _commandsContext.Tasks
                 .Where(t => t.Id == id)
                 .SingleOrDefaultAsync();
         }
 
         public void Update(Domain.AggregatesModel.Tasks.Task task)
         {
-            _context.Entry(task).State = EntityState.Modified;
+            _commandsContext.Entry(task).State = EntityState.Modified;
+        }
+
+        public async Task<TViewModel[]> ListTaskSummaryAsync<TViewModel>()
+        {
+            var sql = @"
+                select t.id, t.description, t.concluded, t.removed
+                from dbo.tasks t";
+
+            using (var connection = _queriesContext.Database.GetDbConnection())
+            {
+                var tasks = await connection.QueryAsync<TViewModel>(sql);
+                return tasks.ToArray();
+            }
+        }
+
+        public async System.Threading.Tasks.Task<TViewModel> GetTaskDetailsAsync<TViewModel>(int id)
+        {
+            var sql = @"
+                select t.id, t.description, t.concluded
+                from dbo.tasks t
+                where t.id = @Id";
+
+            using (var connection = _queriesContext.Database.GetDbConnection())
+            {
+                var taskDetails = await connection.QueryFirstOrDefaultAsync<TViewModel>(sql, new { Id = id });
+                return taskDetails;
+            }
         }
     }
 }

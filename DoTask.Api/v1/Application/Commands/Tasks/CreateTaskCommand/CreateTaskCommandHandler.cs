@@ -15,18 +15,14 @@ namespace DoTask.Api.v1.Application.Commands.Tasks.CreateTaskCommand
             _taskRepository = taskRepository;
         }
 
-        /// <summary>
-        /// Handler which processes the command when
-        /// customer executes cancel order from app
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
         public async Task<Response> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
         {
             var newTask = new Domain.AggregatesModel.Tasks.Task(
                 id: request.Id,
                 description: request.Description,
                 userId: request.UserId);
+
+            _taskRepository.Add(newTask);
 
             var result = await _taskRepository.UnitOfWork
                 .SaveChangesAsync(cancellationToken);
